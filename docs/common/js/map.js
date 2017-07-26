@@ -1,12 +1,16 @@
 (function () {
 	"use strict";
 
+	var w = $(window).width();
+	var h = $(window).height();
+
 	//mapSize
 	function mapSize() {
-		//  var w = $(window).width();
-		var h = $(window).height();
-		//  var mapWidth = w - 40;
-		var mapHeight = h - 60 - $("header").outerHeight() - $("footer").outerHeight();
+		if (w > 768) {
+			var mapHeight = h - 360 - $("header").outerHeight() - $("footer").outerHeight();
+		} else {
+			var mapHeight = h - 160 - $("header").outerHeight() - $("footer").outerHeight();
+		}
 		/*
 		$("#map").css({
 		 "width": mapWidth + "px"
@@ -23,7 +27,7 @@
 
 	//zoomSize
 	var zoomSize = '';
-	var w = $(window).width();
+
 	if (w <= 768) {
 		zoomSize = 17;
 	} else {
