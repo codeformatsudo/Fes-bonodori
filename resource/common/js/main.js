@@ -211,8 +211,15 @@
 			caution.classList.add('home_eventTime_caution');
 			document.querySelector('.home_date').appendChild(caution);
 		}
-	});
 
+		//その他
+		if (data[1][5]) {
+			var eventDescription = document.createElement('div');
+			eventDescription.innerHTML = data[1][5];
+			eventDescription.classList.add('home_description');
+			document.querySelector('.home_date').appendChild(eventDescription);
+		}
+	});
 	/*-----イベントスケジュールの作成-----*/
 	//アクセス
 	csvToArray('data/access.csv', function (data) {
