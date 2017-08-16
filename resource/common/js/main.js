@@ -315,6 +315,7 @@
 		if (data[0][0]) {
 			createEventTable(data, k);
 			createSmallerTable(k);
+			p--0
 		}
 	});
 
