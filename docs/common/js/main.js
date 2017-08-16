@@ -123,7 +123,7 @@
 		var dateArea = document.querySelector('.home_date');
 		var div = document.createElement('div');
 		div.classList.add('home_eventInfo');
-		dateArea.appendChild(div);
+		dateArea.insertBefore(div, dateArea.firstChild);
 		for (i; i < dataLen; i++) {
 
 			var ul = document.createElement('ul');
