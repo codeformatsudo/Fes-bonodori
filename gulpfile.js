@@ -12,7 +12,7 @@ var changed = require('gulp-changed');
 var cache = require('gulp-cached');
 
 var destDir = 'docs/'; // 出力用ディレクトリ
-var assetsDir = 'base/common/'; // 案件によってcommonとかassetsとかあるんでとりあえず変数にした
+var assetsDir = 'common/'; // 案件によってcommonとかassetsとかあるんでとりあえず変数にした
 
 gulp.task('browser-sync', function () {
 	browserSync({
@@ -23,7 +23,7 @@ gulp.task('browser-sync', function () {
 });
 
 gulp.task('sass', function () {
-	return gulp.src(['resource/' + assetsDir + 'sass/**/*.scss'])
+	return gulp.src(['resource/' + assetsDir + 'sass/*.scss'])
 		.pipe(plumber({ // gulp-plumberを咬ますとエラー時にgulpが止まらない。
 			errorHandler: notify.onError('Error: <%= error.message %>') // gulp-notifyでエラー通知を表示
 		}))
@@ -37,14 +37,14 @@ gulp.task('sass', function () {
 gulp.task('css', function () {
 	return gulp.src('resource/**/*.css')
 		.pipe(cache('css-cache')) // cssをキャッシュさせつつ、
-		.pipe(gulp.dest(destDir)) // destDirに出力して、
+		.pipe(gulp.dest(destDir + assetsDir)) // destDirに出力して、
 		.pipe(browserSync.stream()) // browser-syncで反映させる。
 });
 
 // jsの圧縮リネーム
 gulp.task('jsmin', function () {
-	gulp.src(['resource/' + assetsDir + 'js/**/*.js',
-    '!resource/' + assetsDir + 'js/**/*.min.js']) // jQueryなどの、すでに.minなjsは除外する。
+	gulp.src(['resource/' + assetsDir + 'js/*.js',
+    '!resource/' + assetsDir + 'js/*.min.js']) // jQueryなどの、すでに.minなjsは除外する。
 		.pipe(plumber()) // gulp-plumberを咬ますとエラー時にgulpが止まらない（cssみたいにgulp-notify書いてもエラー通知が何故か出ないのでそのまま）。
 		.pipe(changed(destDir + assetsDir + 'js/')) // 変更されたjsのみをgulp.dest対象にする。
 		.pipe(uglify({
@@ -56,14 +56,28 @@ gulp.task('jsmin', function () {
 		.pipe(gulp.dest('resource/' + assetsDir + 'js/')) // jsもとりあえずresource側jsフォルダに吐き出す。
 });
 gulp.task('js', function () {
-	return gulp.src('resource/**/*.js')
+	return gulp.src('resource/' + assetsDir + 'js/*.js')
 		.pipe(cache('js-cache')) // jsをキャッシュさせつつ、
-		.pipe(gulp.dest(destDir)) // destDirに出力して、
+		.pipe(gulp.dest(destDir + assetsDir + 'js/')) // destDirのjsディレクトリに出力して、
 		.pipe(browserSync.stream()) // browser-syncで反映させる。
 });
 
-gulp.task('copyResource', function () {
-	return gulp.src(['resource/**/*', '!resource/' + assetsDir + 'sass/', '!resource/' + assetsDir + 'sass/*.scss']) // sassディレクトリ以外の全ファイルを対象にし、
+gulp.task('copyResourceData', function () {
+	return gulp.src(['resource/data/*']) // dataディレクトリの全ファイルを対象にし、
+		.pipe(cache('resource-cache')) // キャッシュさせて、
+		.pipe(gulp.dest(destDir + 'data/')) // destDirに出力して、
+		.pipe(browserSync.stream()) // browser-syncで反映させる。
+});
+
+gulp.task('copyResourceCommon', function () {
+	return gulp.src(['resource/common/img/*']) // commonのimgディレクトリの全ファイルを対象にし、
+		.pipe(cache('resource-cache')) // キャッシュさせて、
+		.pipe(gulp.dest(destDir + 'common/img/')) // destDirに出力して、
+		.pipe(browserSync.stream()) // browser-syncで反映させる。
+});
+
+gulp.task('copyResourceIndex', function () {
+	return gulp.src(['resource/index.html']) // indexファイルを対象にし、
 		.pipe(cache('resource-cache')) // キャッシュさせて、
 		.pipe(gulp.dest(destDir)) // destDirに出力して、
 		.pipe(browserSync.stream()) // browser-syncで反映させる。
@@ -72,9 +86,15 @@ gulp.task('copyResource', function () {
 // gulp-watchで監視
 // ['browser-sync','copyResource','sass','jsmin']を実行してからdefaultとして内容を実行。
 // gulp-watchを使うとフォルダに追加したファイルも対象に監視してくれるのでgulp再実行の必要がない。
-gulp.task('default', ['browser-sync', 'copyResource', 'sass', 'jsmin'], function () {
-	watch(['resource/**/*.+(jpg|jpeg|gif|png|html|php)'], function (event) {
-		gulp.start(['copyResource']); // css,sass,js以外に変更があったら実行。
+gulp.task('default', ['browser-sync', 'copyResourceData', 'sass', 'jsmin'], function () {
+	watch(['resource/data/*.+(jpg|jpeg|gif|png|csv|txt)'], function (event) {
+		gulp.start(['copyResourceData']); // dataディレクトリに変更があったら実行。
+	});
+	watch(['resource/common/img/*.+(jpg|jpeg|gif|png)'], function (event) {
+		gulp.start(['copyResourceCommon']); // commonのcss,sass,js以外に変更があったら実行。
+	});
+	watch(['resource/index.html'], function (event) {
+		gulp.start(['copyResourceIndex']); // indexに変更があったら実行。
 	});
 	watch(['resource/**/*.scss'], function (event) {
 		gulp.start(['sass']); // sassに変更があったら実行。cssを吐き出すので下のwatchが動く。

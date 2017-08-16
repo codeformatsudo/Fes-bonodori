@@ -280,9 +280,10 @@
 	//イベントのお知らせ
 	csvToArray('data/event-info.csv', function (data) {
 		var dataLen = data.length;
+
 		var eventInfoArea = document.querySelector('.event_info');
-		if (data[1][0]) {
-			for (var i = 1; i < dataLen; i++) {
+		if (data[0][0]) {
+			for (var i = 0; i < dataLen; i++) {
 				for (var j = 0; j < data[i].length; j++) {
 					var div = document.createElement('div');
 					if (j > 0) {
