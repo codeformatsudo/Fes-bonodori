@@ -41,11 +41,11 @@
 					})
 				} else {
 
-					$('.mm-panels').html = data;
+					$('#leftSlidebar>div>div').html = data;
 				}
 			},
 			error: function () {
-				alert("「お知らせ」の取得に失敗しました");
+				alert("Twitterの取得に失敗しました");
 			}
 		});
 
