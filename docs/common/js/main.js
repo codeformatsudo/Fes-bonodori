@@ -1,6 +1,28 @@
 (function () {
 	"use strict";
 
+	/*--twitterウィジェット--*/
+
+	$.ajax({
+		url: 'data/info.txt',
+		timeout: 1000,
+		success: function (data) {
+
+			if (data.length === 0) {
+				$('.twitter-button').css({
+					'display': 'none'
+				})
+			} else {
+				var twitterWidget = $('.twitter-widget').html(data);
+
+
+			}
+		},
+		error: function () {
+			alert("Twitterの取得に失敗しました");
+		}
+	});
+
 	/*--headerの高さ設定--*/
 	var headerHeight = document.querySelector('.header').clientHeight;
 	document.querySelector('.mainImg').style.top = headerHeight + 'px';
@@ -32,28 +54,8 @@
 		}
 	});
 
-	/*--twitterウィジェット--*/
-	/*
-		$.ajax({
-			url: 'data/info.txt',
-			timeout: 1000,
-			success: function (data) {
-				console.log(data)
-				if (data.length === 0) {
-					$('.twitter-button').css({
-						'display': 'none'
-					})
-				} else {
 
-					$('#leftSlidebar>div>div').html = data;
-				}
-			},
-			error: function () {
-				alert("Twitterの取得に失敗しました");
-			}
-		});
 
-	*/
 
 	/*-----注意案内の作成-----*/
 	//注意文の読み込み
@@ -556,26 +558,29 @@
 			}
 		}
 	}
-}());
 
-//CSVを配列にする
-function csvToArray(filename, cb) {
-	$.get(filename, function (csvdata, status) {
-		var ret = [];
-		if (status == 'success') {
-			csvdata = csvdata.replace(/\r/gm, "");
-			var line = csvdata.split("\n");
 
-			var i = 0;
-			for (i in line) {
-				//空行はスルーする。
-				if (line[i].length === 0) {
-					continue;
+	//CSVを配列にする
+	function csvToArray(filename, cb) {
+		$.get(filename, function (csvdata, status) {
+			var ret = [];
+			if (status == 'success') {
+				csvdata = csvdata.replace(/\r/gm, "");
+				var line = csvdata.split("\n");
+
+				var i = 0;
+				for (i in line) {
+					//空行はスルーする。
+					if (line[i].length === 0) {
+						continue;
+					}
+					var row = line[i].split(",");
+					ret.push(row);
 				}
-				var row = line[i].split(",");
-				ret.push(row);
 			}
-		}
-		cb(ret);
-	});
-}
+			cb(ret);
+		});
+	}
+
+
+}());
