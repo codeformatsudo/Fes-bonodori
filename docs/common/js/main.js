@@ -1,6 +1,10 @@
 (function () {
 	"use strict";
 
+	/*--headerの高さ設定--*/
+	var headerHeight = document.querySelector('.header').clientHeight;
+	document.querySelector('.mainImg').style.top = headerHeight + 'px';
+
 	/*-----smaoothScrollの設定-----*/
 	smoothScroll.init({
 		speed: 800,
@@ -528,15 +532,18 @@
 					if (tableObj.rows[i].cells[j] == tableObj.rows[i].cells[0]) {
 						var th = document.createElement('th');
 						th.innerHTML = tableObj.rows[i].cells[0].innerHTML;
-						th.setAttribute('colspan', '2');
+						if (cellsLen > 3) { //イベント項目が2つ以上あったら
+							th.setAttribute('colspan', '2');
+						}
 						th.classList.add('eventTime');
 						tr.appendChild(th);
 					} else {
 						//thを作成
-						var _th = document.createElement('th');
-						_th.innerHTML = tableObj.rows[0].cells[j].innerHTML;
-						tr.appendChild(_th);
-
+						if (cellsLen > 3) {　　 //イベント項目が2つ以上あったら
+							var _th = document.createElement('th');
+							_th.innerHTML = tableObj.rows[0].cells[j].innerHTML;
+							tr.appendChild(_th);
+						}
 						//tdを作成
 						var td = document.createElement('td');
 						td.innerHTML = tableObj.rows[i].cells[j].innerHTML;
