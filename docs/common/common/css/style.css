@@ -150,7 +150,7 @@ section div
 .mainImg
 {
     position: relative;
-    top: 60px;
+    top: 0;
 }
 .mainImg_img
 {
@@ -169,7 +169,7 @@ section div
 {
     position: relative; 
 
-    margin: 60px auto 0 auto;
+    margin: -20px auto 0 auto;
 }
 .home_date
 {
