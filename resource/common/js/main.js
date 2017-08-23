@@ -1,6 +1,8 @@
 (function () {
 	"use strict";
 
+	var windowW = window.innerWidth || document.documentElement.clientWidth;
+
 	/*--twitterウィジェット--*/
 
 	$.ajax({
@@ -23,18 +25,15 @@
 		}
 	});
 
-	/*--headerの高さ設定--*/
-	var headerHeight = document.querySelector('.header').clientHeight;
-	document.querySelector('.mainImg').style.top = headerHeight + 'px';
 
-	/*-----smaoothScrollの設定-----*/
+	/*--smaoothScrollの設定--*/
 	smoothScroll.init({
 		speed: 800,
 		updateURL: false,
 		easing: 'easeOutQuad'
 	});
 
-	/*-----twitterButton設定-----*/
+	/*--twitterButton設定--*/
 	function leftButton() {
 		var windowH = window.innerHeight || document.documentElement.clientHeight;
 
@@ -45,7 +44,7 @@
 	$(window).on('load resize orientationchange', function () {
 		leftButton();
 	});
-	/*-----mmenu設定-----*/
+	/*--mmenu設定--*/
 	$("#leftSlidebar").mmenu({
 		slidingSubmenus: false,
 		offCanvas: {
@@ -107,7 +106,7 @@
 		fixContent.style.top = windowH + scrollTop + 70 - fixH + 'px';
 	}
 /*
-	/*-----headerの縮小-----*/
+	/*--headerの縮小--*/
 	// スクロールして何ピクセルでアニメーションさせるか
 	var px_change = 300;
 	// スクロールのイベントハンドラを登録
@@ -121,7 +120,7 @@
 		}
 	});
 
-	/*-----基本設定-----*/
+	/*--基本設定--*/
 	//イベントの日時
 	csvToArray('data/date.csv', function (data) {
 		var dataLen = data.length;
@@ -201,7 +200,7 @@
 			image.onload = function () {
 				var width = image.width;
 				var height = image.height;
-				var windowW = window.innerWidth || document.documentElement.clientWidth;
+
 				if (width < height && windowW > 768) {
 					var imgClass = document.querySelector('.mainImg_img');
 					imgClass.style.width = '60%';
@@ -210,6 +209,13 @@
 			};
 		}
 
+		/*--headerの高さ設定--*/
+		var siteTitle = document.querySelector('.header_siteTitle');
+		var mainImgArea = document.querySelector('.mainImg')
+		var headerHeight = siteTitle.offsetHeight;
+		mainImgArea.style.paddingTop = headerHeight + 20 + 'px';
+
+		console.log(headerHeight);
 		//雨天時の注意
 		if (data[1][4]) {
 			var caution = document.createElement('div');
@@ -226,7 +232,7 @@
 			document.querySelector('.home_date').appendChild(eventDescription);
 		}
 	});
-	/*-----イベントスケジュールの作成-----*/
+	/*--イベントスケジュールの作成--*/
 	//アクセス
 	csvToArray('data/access.csv', function (data) {
 		//場所
@@ -330,15 +336,16 @@
 			createEventTable(data, k);
 			createSmallerTable(k);
 		}
+		csvToArray('data/event-2.csv', function (data) {
+			var k = 2;
+			if (data[0][0]) {
+				createEventTable(data, k);
+				createSmallerTable(k);
+			}
+		});
 	});
 
-	csvToArray('data/event-2.csv', function (data) {
-		var k = 2;
-		if (data[0][0]) {
-			createEventTable(data, k);
-			createSmallerTable(k);
-		}
-	});
+
 
 	//主催・後援・協力・協賛
 	csvToArray('data/sponsors.csv', function (data) {
@@ -581,6 +588,7 @@
 			cb(ret);
 		});
 	}
+
 
 
 }());
