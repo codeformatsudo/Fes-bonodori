@@ -35,9 +35,9 @@ gulp.task('sass', function () {
 		.pipe(gulp.dest('resource/' + assetsDir + 'css/')) // とりあえずresource側cssフォルダに吐き出す。
 });
 gulp.task('css', function () {
-	return gulp.src('resource/**/*.css')
+	return gulp.src('resource/' + assetsDir + 'css/*.css')
 		.pipe(cache('css-cache')) // cssをキャッシュさせつつ、
-		.pipe(gulp.dest(destDir + assetsDir)) // destDirに出力して、
+		.pipe(gulp.dest(destDir + assetsDir + 'css/')) // cssに出力して、
 		.pipe(browserSync.stream()) // browser-syncで反映させる。
 });
 
@@ -96,10 +96,10 @@ gulp.task('default', ['browser-sync', 'copyResourceData', 'sass', 'jsmin'], func
 	watch(['resource/index.html'], function (event) {
 		gulp.start(['copyResourceIndex']); // indexに変更があったら実行。
 	});
-	watch(['resource/**/*.scss'], function (event) {
+	watch(['resource/**/sass/*.scss'], function (event) {
 		gulp.start(['sass']); // sassに変更があったら実行。cssを吐き出すので下のwatchが動く。
 	});
-	watch(['resource/**/*.css'], function (event) {
+	watch(['resource/**/css/*.css'], function (event) {
 		gulp.start(['css']); // cssに変更があったら実行。つまりsassを変更したらセットで実行となる。
 	});
 	watch(['resource/**/*.js'], function (event) {
